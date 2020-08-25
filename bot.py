@@ -4,6 +4,7 @@ import random
 
 import discord
 from dotenv import load_dotenv
+from datetime import date
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -38,6 +39,10 @@ async def on_message(message):
             'no doubt no doubt no doubt no doubt.'
         ),
     ]
+
+    if message.content == 'time!':
+        time = str(date.today())
+        await message.channel.send(time)
 
     if message.content == '99!':
         response = random.choice(brooklyn_99_quotes)

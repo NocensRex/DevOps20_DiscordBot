@@ -14,8 +14,7 @@ today_lessons = list(c.timeline.today())
 nxt_lesson = list(c.timeline.start_after(time_now))[0]
 
 def next_lesson(lesson=nxt_lesson):
-    time_begin = arrow.get(lesson.begin)
-    local = time_begin.to('local').format('YYYY-MM-DD HH:mm')
+    local = local_time(lesson.begin)
     name = lesson.name
     location = lesson.location
 
@@ -28,10 +27,8 @@ def this_day(lesson=today_lessons):
     items = []
     items.append("Dagens schema:")
     for item in lesson:
-        time_begin = arrow.get(item.begin)
-        time_end = arrow.get(item.end)
-        local_begin = time_begin.to('local').format('HH:mm')
-        local_end = time_end.to('local').format('HH:mm')
+        local_begin = local_time(item.begin)
+        local_end = local_time(item.end)
 
         if item.location == "Digital undervisning":
             items.append(f'{local_begin} - {local_end}, "{item.name}", på Zoom')
@@ -39,5 +36,7 @@ def this_day(lesson=today_lessons):
             items.append(f'{local_begin} - {local_end}, "{item.name}", i sal {item.location}')
     return items
 
-def local_time():
-    pass
+def local_time(utctime):
+    time = arrow.get(utctime)
+    local = time.to('local').format('HH:mm')
+    return local

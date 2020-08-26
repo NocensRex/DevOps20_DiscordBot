@@ -5,6 +5,7 @@ import random
 import discord
 from dotenv import load_dotenv
 from datetime import date
+import schedule
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -40,9 +41,13 @@ async def on_message(message):
         ),
     ]
 
-    if message.content == 'time!':
-        time = str(date.today())
-        await message.channel.send(time)
+    if message.content == 'next!':
+        await message.channel.send(schedule.next_lesson())
+
+    if message.content == 'today!':
+        items = schedule.this_day()
+        for item in items:
+            await message.channel.send(item)
 
     if message.content == '99!':
         response = random.choice(brooklyn_99_quotes)

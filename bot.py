@@ -2,43 +2,25 @@
 import os
 import random
 
-import discord
+from discord.ext import commands
 from dotenv import load_dotenv
-from datetime import date
 import schedule
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='!')
 
-@client.event
-async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
+@bot.command(name='next', help='Visar vad nästa lektion är och när den börjar.')
+async def next_lesson(ctx):
+    next_ = schedule.next_lesson()
+    await ctx.send(next_)
 
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
+@bot.command(name='today', help='Visar dagens schema.')
+async def lesson_today(ctx):
+    today_list = schedule.this_day()
+    for item in today_list:
+        await ctx.send(item)
 
-    members = '\n - '.join([member.name for member in guild.members])
-    print(f'Guild Members:\n - {members}')
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content == 'next!':
-        await message.channel.send(schedule.next_lesson())
-
-    if message.content == 'today!':
-        items = schedule.this_day()
-        for item in items:
-            await message.channel.send(item)
-
-client.run(TOKEN)
-
+bot.run(TOKEN)

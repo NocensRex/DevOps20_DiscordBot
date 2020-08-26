@@ -25,18 +25,24 @@ def next_lesson(lesson=nxt_lesson):
 
 def this_day(lesson=today_lessons):
     items = []
-    items.append("Dagens schema:")
-    for item in lesson:
-        local_begin = local_time(item.begin)
-        local_end = local_time(item.end)
+    if not lesson:
+        items.append("Inga lektioner idag.")
+        return items
 
-        if item.location == "Digital undervisning":
-            items.append(f'{local_begin} - {local_end}, "{item.name}", på Zoom')
-        else:
-            items.append(f'{local_begin} - {local_end}, "{item.name}", i sal {item.location}')
-    return items
+    else:
+        items.append("Dagens schema:")
+        for item in lesson:
+            local_begin = local_time(item.begin)
+            local_end = local_time(item.end)
+
+            if item.location == "Digital undervisning":
+                items.append(f'{local_begin} - {local_end}, "{item.name}", på Zoom')
+            else:
+                items.append(f'{local_begin} - {local_end}, "{item.name}", i sal {item.location}')
+        return items
 
 def local_time(utctime):
     time = arrow.get(utctime)
     local = time.to('local').format('HH:mm')
     return local
+

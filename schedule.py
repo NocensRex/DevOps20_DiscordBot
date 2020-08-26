@@ -1,16 +1,19 @@
 from ics import Calendar
 from datetime import date
+from dotenv import load_dotenv
+
 import requests
 import arrow
+import os
 
-url = "https://cloud.timeedit.net/nackademin/web/1/ri6855Qy1098n6QZ2YQ3Q7ZQZ6607.ics"
+load_dotenv()
+url = os.getenv('URL')
+
 r = requests.get(url).text
 time_now = arrow.utcnow()
-
 c = Calendar(r)
 
 today_lessons = list(c.timeline.today())
-
 nxt_lesson = list(c.timeline.start_after(time_now))[0]
 
 def next_lesson(lesson=nxt_lesson):
@@ -46,3 +49,4 @@ def local_time(utctime):
     local = time.to('local').format('HH:mm')
     return local
 
+print(next_lesson())
